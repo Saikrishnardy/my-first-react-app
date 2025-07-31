@@ -1,27 +1,51 @@
-import React from "react";
+import React, { useState } from "react";
+import { v4 as uuid } from "uuid";
 import './App.css';
-import { useState } from "react";
-import { v4 as uuid} from "uuid";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { useEffect } from "react";
+import { useRef } from "react";
+
+
+
+
+
 const ToDoList = () => {
-    const [todos, setTodos] = useState([]);
-    const [inputValue, setInputValue] = useState("");   
-    const toDoInput=(e)=>{
-        setInputValue(e.target.value)
+  const [todos, setTodos] = useState([]);
+  const [inputValue, setInputValue] = useState("");
+  const didMount = useRef(false);
+  useEffect(() => {
+  const storedTodos = JSON.parse(localStorage.getItem("todos"));
+  if (storedTodos) setTodos(storedTodos);
+}, []);
+
+useEffect(() => {
+    if (didMount.current) {
+      localStorage.setItem("todos", JSON.stringify(todos));
+    } else {
+      didMount.current = true;
     }
-    const addToList=()=>{
-        if(inputValue.trim()!=""){
-        setTodos([...todos,{id:uuid(),inputValue,isCompleted:false}]);
-        setInputValue("");
-        }
+  }, [todos]);
+  const toDoInput = (e) => setInputValue(e.target.value);
+
+  const addToList = () => {
+    if (inputValue.trim() !== "") {
+      setTodos([...todos, { id: uuid(), inputValue, isCompleted: false }]);
+      setInputValue("");
     }
-    const deleteTodo=(id)=>{
-        const updatedTodo=todos.filter(todo=>todo.id!=id)
-        setTodos(updatedTodo);
-    }
-    const ToDoChange=(id)=>{
-        const updatedTodo=todos.map((todo)=>todo.id===id?{...todo,isCompleted:!todo.isCompleted }:todo)
-        setTodos(updatedTodo);
-    }
+  };
+
+  const deleteTodo = (id) => {
+    setTodos(todos.filter((todo) => todo.id !== id));
+  };
+
+  const ToDoChange = (id) => {
+    setTodos(
+      todos.map((todo) =>
+        todo.id === id ? { ...todo, isCompleted: !todo.isCompleted } : todo
+      )
+    );
+  };
+
   return (
     <div className="container mt-5">
       <h1 className="text-center mb-4">To-Do List</h1>
@@ -41,7 +65,7 @@ const ToDoList = () => {
             {todos.length === 0 ? (
               <div className="text-muted mt-3 text-center">No todos yet. Add one!</div>
             ) : (
-              todos.map((todo) => (
+              [...todos].sort((a, b) => a.isCompleted - b.isCompleted).map((todo) => (
                 <div key={todo.id} className="d-flex justify-content-between align-items-center my-2">
                   <label className="flex-grow-1">
                     <input
