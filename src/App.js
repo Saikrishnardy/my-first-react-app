@@ -6,6 +6,7 @@ import Brands from './components/brands';
 import ToDoList from './components/ToDoList';
 import { useState } from 'react';   
 import 'bootstrap/dist/css/bootstrap.min.css';
+import Temp from './components/temp';
 // ...existing code...
 
 function App() {
@@ -17,6 +18,7 @@ let a=10
       <App1></App1>
       <ProductList/>
       <Brands/> */}
+      {/* <Temp/> */}
       <ToDoList/>
     </div>
   );

@@ -45,9 +45,23 @@ useEffect(() => {
       )
     );
   };
+  const[checklist,setChecklist]=useState([]);
+  useEffect(() => {
+    const todos = async () => {
+      try {
+        const response = await fetch("https://dummyjson.com/todos");
+        const data = await response.json();
+        setChecklist(data.todos);
+      } catch (error) {
+        console.error("Error fetching todos:", error);
+      }
+    };
+    todos();
+  }, []);
 
   return (
     <div className="container mt-5">
+    console.log(todos);
       <h1 className="text-center mb-4">To-Do List</h1>
       <div className="row justify-content-center">
         <div className="col-12 col-sm-8 col-md-6">
@@ -96,6 +110,18 @@ useEffect(() => {
           </div>
         </div>
       </div>
+
+        <div>
+          {/* <h2>Checklist</h2>
+          {checklist.map((item) => (
+            <div key={item.id}>
+              <h3>{item.todo}</h3>
+              <p>{item.description}</p>
+            </div>
+          ))} */}
+        </div>
+
+```
     </div>
   );
 };
